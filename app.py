@@ -17,6 +17,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 
 from biometric_engine import BiometricEngine
+from osint_engine import OsintEngine
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
@@ -28,6 +29,7 @@ os.makedirs(ICON_CACHE_DIR, exist_ok=True)
 
 app = FastAPI(title="FaceCheck.ID - Motor de Busca por Reconhecimento Facial")
 engine = BiometricEngine()
+osint = OsintEngine(biometric_engine=engine)
 
 # In-memory active search sessions (backed by SQLite for persistence/permalinks)
 SEARCH_SESSIONS: Dict[str, Dict[str, Any]] = {}
@@ -692,6 +694,32 @@ async def compare_page():
 @app.get("/pt/Procura-de-Rosto-em-Imagem-Reversa", response_class=HTMLResponse)
 async def procura_page():
     return HTMLResponse(_load_template("procura.html"))
+
+
+@app.get("/osint", response_class=HTMLResponse)
+@app.get("/pt/osint", response_class=HTMLResponse)
+async def osint_page():
+    return HTMLResponse(_load_template("osint.html"))
+
+
+@app.post("/api/osint/search")
+async def api_osint_search(request: Request):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    query = (body.get("query") or "").strip()
+    data = await osint.search_identity(query)
+    return JSONResponse(data)
+
+
+@app.post("/api/osint/photo")
+async def api_osint_photo(image: UploadFile = File(...)):
+    img_bytes = await image.read()
+    if not img_bytes:
+        return JSONResponse({"error": "Imagem vazia", "profiles": []})
+    data = await osint.identify_from_photo(img_bytes)
+    return JSONResponse(data)
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
