@@ -73,7 +73,7 @@ DIRECT_USERNAME_PROBES = [
 ]
 
 HANDLE_REGEXES = [
-    (r"instagram\.com/(?:p/|reel/|stories/)?([A-Za-z0-9_.]{2,30})", "Instagram"),
+    (r"instagram\.com/([A-Za-z0-9_.]{2,30})", "Instagram"),
     (r"tiktok\.com/@([A-Za-z0-9_.]{2,32})", "TikTok"),
     (r"(?:x|twitter)\.com/([A-Za-z0-9_]{2,25})", "X / Twitter"),
     (r"threads\.net/@([A-Za-z0-9_.]{2,30})", "Threads"),
@@ -122,7 +122,7 @@ class OsintEngine:
             domain, (domain.split(".")[0].capitalize(), "Web & Menções", "#64748B")
         )
 
-        # Extract @handle if present
+        # Extract @handle if present in URL or fallback to (@handle) in title
         handle = ""
         for pattern, _ in HANDLE_REGEXES:
             m = re.search(pattern, url, re.IGNORECASE)
@@ -131,6 +131,10 @@ class OsintEngine:
                 if cand.lower() not in IGNORED_HANDLES:
                     handle = "@" + cand
                     break
+        if not handle and title and domain in ("instagram.com", "tiktok.com", "x.com", "twitter.com"):
+            mt = re.search(r"\(@([A-Za-z0-9_.]{2,30})\)", title)
+            if mt and mt.group(1).lower() not in IGNORED_HANDLES:
+                handle = "@" + mt.group(1)
 
         return {
             "url": url,
@@ -389,8 +393,7 @@ class OsintEngine:
                     clean_q = query.lstrip("@")
                     # 4 parallel uncensored DuckDuckGo queries covering all social, creator, and database platforms
                     q_social = (
-                        f'{clean_q} (site:instagram.com OR site:tiktok.com OR site:x.com '
-                        f'OR site:twitter.com OR site:youtube.com OR site:threads.net OR site:twitch.tv OR site:facebook.com)'
+                        f'{clean_q} (site:instagram.com OR site:tiktok.com OR site:x.com OR site:twitter.com)'
                     )
                     q_creator = (
                         f'{clean_q} (site:onlyfans.com OR site:fansly.com OR site:fapello.com '
@@ -401,7 +404,8 @@ class OsintEngine:
                         f'OR site:indexxx.com OR site:freeones.com OR site:linktr.ee OR site:allmylinks.com OR site:beacons.ai)'
                     )
                     q_comm = (
-                        f'{clean_q} (site:t.me OR site:reddit.com OR site:vk.com OR site:pinterest.com OR site:steamcommunity.com)'
+                        f'{clean_q} (site:youtube.com OR site:threads.net OR site:twitch.tv OR site:facebook.com '
+                        f'OR site:t.me OR site:reddit.com OR site:vk.com OR site:pinterest.com)'
                     )
                     tasks.extend([
                         self._ddg_search(client, q_social),
@@ -486,10 +490,27 @@ class OsintEngine:
         }
         discovered_items.sort(key=lambda x: (cat_order.get(x["category"], 99), x["platform"]))
 
+        # Extract primary direct social profile links for Instagram, TikTok, and Twitter/X
+        direct_socials: Dict[str, Dict[str, str]] = {}
+        for item in discovered_items:
+            dom = item.get("domain", "")
+            h = item.get("handle", "").lstrip("@")
+            url = item.get("url", "")
+            if dom == "instagram.com" and ("instagram" not in direct_socials or (h and direct_socials["instagram"]["handle"] == "Instagram")):
+                clean_url = f"https://www.instagram.com/{h}/" if h else url
+                direct_socials["instagram"] = {"url": clean_url, "handle": f"@{h}" if h else "Instagram"}
+            elif dom == "tiktok.com" and ("tiktok" not in direct_socials or (h and direct_socials["tiktok"]["handle"] == "TikTok")):
+                clean_url = f"https://www.tiktok.com/@{h}" if h else url
+                direct_socials["tiktok"] = {"url": clean_url, "handle": f"@{h}" if h else "TikTok"}
+            elif dom in ("x.com", "twitter.com") and ("twitter" not in direct_socials or (h and direct_socials["twitter"]["handle"] == "Twitter / X")):
+                clean_url = f"https://x.com/{h}" if h else url
+                direct_socials["twitter"] = {"url": clean_url, "handle": f"@{h}" if h else "Twitter / X"}
+
         return {
             "query": query,
             "query_type": "email" if is_email else "phone" if is_phone else "handle" if is_handle else "name",
             "aliases": aliases,
+            "direct_socials": direct_socials,
             "bio_summary": bio_summary,
             "gallery_thumbs": gallery_thumbs[:12],
             "total_found": len(discovered_items),
