@@ -360,16 +360,31 @@ class BiometricEngine:
             faces = [self._synthesize_fallback_face_row(bgr)]
 
         extracted = []
-        # Extract the primary most prominent face per uploaded image
-        for f_row in faces[:1]:
+        # Extract all prominent faces per uploaded image, with mirrored selfie augmentation
+        for f_row in faces[:3]:
             try:
                 aligned = self.recognizer.alignCrop(bgr, f_row)
-                feat = self.recognizer.feature(aligned)
-                norm = np.linalg.norm(feat)
-                if norm > 0:
-                    feat = feat / norm
+                feat1 = self.recognizer.feature(aligned).flatten().astype(np.float32)
+                norm1 = np.linalg.norm(feat1)
+                if norm1 > 0:
+                    feat1 = feat1 / norm1
+
+                # Front-camera selfie mirror embedding (solves mirrored Instagram/TikTok selfies)
+                aligned_flip = cv2.flip(aligned, 1)
+                feat2 = self.recognizer.feature(aligned_flip).flatten().astype(np.float32)
+                norm2 = np.linalg.norm(feat2)
+                if norm2 > 0:
+                    feat2 = feat2 / norm2
+
+                # Combined normalized descriptor + keep both for max-cosine matching
+                feat_avg = feat1 + feat2
+                norm_avg = np.linalg.norm(feat_avg)
+                if norm_avg > 0:
+                    feat_avg = feat_avg / norm_avg
             except Exception:
-                feat = np.zeros((1, 128), dtype=np.float32)
+                feat1 = np.zeros(128, dtype=np.float32)
+                feat2 = np.zeros(128, dtype=np.float32)
+                feat_avg = np.zeros(128, dtype=np.float32)
 
             crop_bgr, crop_box = self._crop_face_square(bgr, f_row, out_size=180)
             phash = self.compute_phash(crop_bgr)
@@ -380,11 +395,15 @@ class BiometricEngine:
                 "id_pic": f"pic_{uuid.uuid4().hex[:8]}",
                 "base64": b64_thumb,
                 "svg_anim": svg_anim,
-                "embedding": feat.astype(np.float32),
+                "embedding": feat1.astype(np.float32),
+                "embedding_flip": feat2.astype(np.float32),
+                "embedding_avg": feat_avg.astype(np.float32),
                 "phash": phash,
                 "crop_bgr": crop_bgr,
                 "orig_bgr": bgr
             })
+            # Keep primary face unless multiple uploaded files
+            break
         return extracted
 
     def compute_biometric_score(
@@ -393,43 +412,57 @@ class BiometricEngine:
         probe_phash: str,
         cand_emb: np.ndarray,
         cand_phash: str,
-        is_exact_site_match: bool = False
+        is_exact_site_match: bool = False,
+        probe_emb_flip: Optional[np.ndarray] = None
     ) -> int:
         """
-        Maps OpenCV SFace 128D cosine similarity + perceptual DCT hash similarity
-        onto FaceCheck.ID's 0-100 calibrated confidence scale:
+        Maps OpenCV SFace 128D cosine similarity (including mirror-selfie invariance)
+        + perceptual DCT hash similarity onto FaceCheck.ID's 0-100 calibrated scale:
           - 90 to 100 (Green): Certain Match (Correspondência Certa)
           - 83 to 89 (Yellow): Confident Match (Correspondência Confiável)
           - 70 to 82 (Orange): Uncertain Match (Correspondência Incerta)
           - 50 to 69 (Red): Weak Match (Correspondência Fraca)
         """
+        c_vec = cand_emb.reshape(1, 128).astype(np.float32)
         cos_sim = float(self.recognizer.match(
             probe_emb.reshape(1, 128).astype(np.float32),
-            cand_emb.reshape(1, 128).astype(np.float32),
+            c_vec,
             cv2.FaceRecognizerSF_FR_COSINE
         ))
+        if probe_emb_flip is not None:
+            cos_flip = float(self.recognizer.match(
+                probe_emb_flip.reshape(1, 128).astype(np.float32),
+                c_vec,
+                cv2.FaceRecognizerSF_FR_COSINE
+            ))
+            cos_sim = max(cos_sim, cos_flip)
+
         p_sim = self.phash_similarity(probe_phash, cand_phash)
 
         # Exact or near-identical image match
-        if p_sim >= 0.90 or cos_sim >= 0.88:
-            return int(np.clip(round(96 + (max(p_sim, cos_sim) - 0.88) * 33.0), 96, 100))
+        if p_sim >= 0.88 or cos_sim >= 0.85:
+            return int(np.clip(round(96 + (max(p_sim, cos_sim) - 0.85) * 26.0), 96, 100))
+
+        # Strict rejection of non-matching faces so strangers never pollute results
+        if cos_sim < 0.23 and p_sim < 0.72:
+            return 0
 
         # Calibrated piecewise linear mapping based on SFace ROC threshold (0.363)
-        if cos_sim >= 0.52:
+        if cos_sim >= 0.48:
             # High confidence same identity -> 90..96
-            raw = 90.0 + ((cos_sim - 0.52) / (0.88 - 0.52)) * 6.0
-        elif cos_sim >= 0.363:
+            raw = 90.0 + ((cos_sim - 0.48) / (0.85 - 0.48)) * 6.0
+        elif cos_sim >= 0.35:
             # Official SFace same-person threshold -> 83..89
-            raw = 83.0 + ((cos_sim - 0.363) / (0.52 - 0.363)) * 6.5
-        elif cos_sim >= 0.22:
-            # Plausible match / lookalike -> 70..82
-            raw = 70.0 + ((cos_sim - 0.22) / (0.363 - 0.22)) * 12.5
+            raw = 83.0 + ((cos_sim - 0.35) / (0.48 - 0.35)) * 6.5
+        elif cos_sim >= 0.26:
+            # Plausible match / hard angle -> 72..82
+            raw = 72.0 + ((cos_sim - 0.26) / (0.35 - 0.26)) * 10.5
         else:
-            # Weak lookalike -> 52..69
-            raw = 52.0 + (max(0.0, cos_sim + 0.05) / 0.27) * 17.0
+            # Borderline lookalike -> 58..71
+            raw = 58.0 + ((cos_sim - 0.23) / 0.03) * 13.0
 
-        if is_exact_site_match and raw < 84.0 and cos_sim >= 0.26:
-            raw = max(raw + 8.0, 84.0)
+        if is_exact_site_match and cos_sim >= 0.31:
+            raw = max(raw + 5.0, 85.0)
 
         return int(np.clip(round(raw), 50, 100))
 
@@ -490,12 +523,18 @@ class BiometricEngine:
             best_score = 0
             best_idx = 0
             for idx, p in enumerate(probes):
-                sc = self.compute_biometric_score(p["embedding"], p["phash"], cand_emb, cand_phash)
+                sc = self.compute_biometric_score(
+                    p["embedding"],
+                    p["phash"],
+                    cand_emb,
+                    cand_phash,
+                    probe_emb_flip=p.get("embedding_flip")
+                )
                 if sc > best_score:
                     best_score = sc
                     best_idx = idx
 
-            if best_score >= 55:
+            if best_score >= 80:
                 matches.append({
                     "guid": guid,
                     "score": best_score,
@@ -540,18 +579,20 @@ class BiometricEngine:
             orig_url = params["originalImageUrl"]
 
             main_url = f"https://yandex.ru/images/search?rpt=imageview&url={orig_url}&cbir_id={cbir_id}&family=no"
+            sites_url = f"https://yandex.ru/images/search?rpt=imageview&url={orig_url}&cbir_id={cbir_id}&cbir_page=sites&family=no"
             sim_url = f"https://yandex.ru/images/search?rpt=imageview&url={orig_url}&cbir_id={cbir_id}&cbir_page=similar&family=no"
             com_url = f"https://yandex.com/images/search?rpt=imageview&url={orig_url}&cbir_id={cbir_id}&family=no"
 
-            r_main, r_sim, r_ru = await asyncio.gather(
+            r_main, r_sites, r_sim, r_ru = await asyncio.gather(
                 client.get(main_url, headers=headers, follow_redirects=True, timeout=9.0),
+                client.get(sites_url, headers=headers, follow_redirects=True, timeout=9.0),
                 client.get(sim_url, headers=headers, follow_redirects=True, timeout=9.0),
                 client.get(com_url, headers=headers, follow_redirects=True, timeout=9.0),
                 return_exceptions=True,
             )
 
-            # Parse main CBIR page + RU uncensored CBIR page (cbirSites + cbirTags)
-            for r_page in (r_main, r_ru):
+            # Parse main CBIR page + full Sites page + RU uncensored CBIR page (cbirSites + cbirTags)
+            for r_page in (r_main, r_sites, r_ru):
                 if isinstance(r_page, httpx.Response) and r_page.status_code == 200:
                     soup = BeautifulSoup(r_page.text, "html.parser")
                     for div in soup.find_all(attrs={"data-state": True}):
@@ -826,14 +867,14 @@ class BiometricEngine:
                 if k not in seen_keys:
                     seen_keys.add(k)
                     unique_candidates.append(c)
-                if len(unique_candidates) >= 68:
+                if len(unique_candidates) >= 95:
                     break
 
             if progress_cb:
                 progress_cb("Downloading Images", 72)
 
             # 3. Download candidate images in parallel and run YuNet + SFace Biometric Verification
-            sem = asyncio.Semaphore(18)
+            sem = asyncio.Semaphore(24)
             dl_headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
             }
@@ -873,47 +914,61 @@ class BiometricEngine:
             if bgr is None:
                 continue
 
-            faces = self._detect_faces_yunet(bgr, score_thresh=0.38)
+            faces = self._detect_faces_yunet(bgr, score_thresh=0.36)
             if not faces:
                 if cand.get("is_site_match"):
-                    # Exact site match where face may be partially occluded or stylized
-                    faces = [self._synthesize_fallback_face_row(bgr)]
+                    # Only accept a non-detected face if the whole image is an exact perceptual hash match
+                    whole_phash = self.compute_phash(bgr)
+                    if any(self.phash_similarity(p["phash"], whole_phash) >= 0.80 for p in probes):
+                        faces = [self._synthesize_fallback_face_row(bgr)]
+                    else:
+                        continue
                 else:
                     continue
 
-            f_row = faces[0]
-            try:
-                aligned = self.recognizer.alignCrop(bgr, f_row)
-                cand_emb = self.recognizer.feature(aligned)
-                norm = np.linalg.norm(cand_emb)
-                if norm > 0:
-                    cand_emb = cand_emb / norm
-                cand_emb = cand_emb.flatten().astype(np.float32)
-            except Exception:
-                continue
-
-            crop_bgr, _ = self._crop_face_square(bgr, f_row, out_size=180)
-            cand_phash = self.compute_phash(crop_bgr)
-            b64_thumb = self._encode_base64_jpeg(crop_bgr, quality=85)
-            if not b64_thumb:
-                continue
-
+            # Evaluate up to 5 faces in the candidate photo (handles group photos/couples accurately!)
             best_score = 0
             best_idx = 0
-            for idx, p in enumerate(probes):
-                sc = self.compute_biometric_score(
-                    p["embedding"],
-                    p["phash"],
-                    cand_emb,
-                    cand_phash,
-                    is_exact_site_match=bool(cand.get("is_site_match"))
-                )
-                if sc > best_score:
-                    best_score = sc
-                    best_idx = idx
+            best_emb = None
+            best_phash = ""
+            best_b64 = ""
 
-            if best_score < 50:
+            for f_row in faces[:5]:
+                try:
+                    aligned = self.recognizer.alignCrop(bgr, f_row)
+                    c_emb = self.recognizer.feature(aligned)
+                    norm = np.linalg.norm(c_emb)
+                    if norm > 0:
+                        c_emb = c_emb / norm
+                    c_emb = c_emb.flatten().astype(np.float32)
+                except Exception:
+                    continue
+
+                crop_bgr, _ = self._crop_face_square(bgr, f_row, out_size=180)
+                c_phash = self.compute_phash(crop_bgr)
+
+                for idx, p in enumerate(probes):
+                    sc = self.compute_biometric_score(
+                        p["embedding"],
+                        p["phash"],
+                        c_emb,
+                        c_phash,
+                        is_exact_site_match=bool(cand.get("is_site_match")),
+                        probe_emb_flip=p.get("embedding_flip")
+                    )
+                    if sc > best_score:
+                        best_score = sc
+                        best_idx = idx
+                        best_emb = c_emb
+                        best_phash = c_phash
+                        best_b64 = self._encode_base64_jpeg(crop_bgr, quality=86)
+
+            if best_score < 62 or best_emb is None or not best_b64:
                 continue
+
+            cand_emb = best_emb
+            cand_phash = best_phash
+            b64_thumb = best_b64
 
             guid = self.index_face_record(
                 cand_emb,
