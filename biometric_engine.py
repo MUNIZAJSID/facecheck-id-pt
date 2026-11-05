@@ -443,26 +443,26 @@ class BiometricEngine:
         if p_sim >= 0.88 or cos_sim >= 0.85:
             return int(np.clip(round(96 + (max(p_sim, cos_sim) - 0.85) * 26.0), 96, 100))
 
-        # Strict rejection of non-matching faces so strangers never pollute results
-        if cos_sim < 0.23 and p_sim < 0.72:
+        # Strict rejection of non-matching faces unless confirmed exact site/person match
+        if cos_sim < 0.16 and p_sim < 0.70 and not is_exact_site_match:
             return 0
 
         # Calibrated piecewise linear mapping based on SFace ROC threshold (0.363)
-        if cos_sim >= 0.48:
+        if cos_sim >= 0.46:
             # High confidence same identity -> 90..96
-            raw = 90.0 + ((cos_sim - 0.48) / (0.85 - 0.48)) * 6.0
-        elif cos_sim >= 0.35:
+            raw = 90.0 + ((cos_sim - 0.46) / (0.85 - 0.46)) * 6.0
+        elif cos_sim >= 0.33:
             # Official SFace same-person threshold -> 83..89
-            raw = 83.0 + ((cos_sim - 0.35) / (0.48 - 0.35)) * 6.5
-        elif cos_sim >= 0.26:
+            raw = 83.0 + ((cos_sim - 0.33) / (0.46 - 0.33)) * 6.5
+        elif cos_sim >= 0.22:
             # Plausible match / hard angle -> 72..82
-            raw = 72.0 + ((cos_sim - 0.26) / (0.35 - 0.26)) * 10.5
+            raw = 72.0 + ((cos_sim - 0.22) / (0.33 - 0.22)) * 10.5
         else:
-            # Borderline lookalike -> 58..71
-            raw = 58.0 + ((cos_sim - 0.23) / 0.03) * 13.0
+            # Borderline angle / lighting -> 58..71
+            raw = 58.0 + (max(0.0, cos_sim - 0.12) / 0.10) * 13.0
 
-        if is_exact_site_match and cos_sim >= 0.31:
-            raw = max(raw + 5.0, 85.0)
+        if is_exact_site_match and cos_sim >= 0.18:
+            raw = max(raw + 9.0, 84.0)
 
         return int(np.clip(round(raw), 50, 100))
 
@@ -561,17 +561,25 @@ class BiometricEngine:
             "Cookie": "yp=1999999999.sp.family%3A0; fyandex=0;",
         }
         try:
-            up_url = (
-                "https://yandex.com/images/touch/search?rpt=imageview&format=json"
-                "&request=%7B%22blocks%22%3A%5B%7B%22block%22%3A%22cbir-uploader__get-cbir-id%22%7D%5D%7D"
-            )
-            r = await client.post(
-                up_url,
-                files={"upfile": ("face.jpg", img_bytes, "image/jpeg")},
-                headers=headers,
-                timeout=9.0,
-            )
-            if r.status_code != 200:
+            # Upload to yandex.ru first (unfiltered index), fallback to yandex.com
+            r = None
+            for host in ("yandex.ru", "yandex.com"):
+                up_url = (
+                    f"https://{host}/images/touch/search?rpt=imageview&format=json"
+                    "&request=%7B%22blocks%22%3A%5B%7B%22block%22%3A%22cbir-uploader__get-cbir-id%22%7D%5D%7D"
+                )
+                try:
+                    r = await client.post(
+                        up_url,
+                        files={"upfile": ("face.jpg", img_bytes, "image/jpeg")},
+                        headers=headers,
+                        timeout=8.5,
+                    )
+                    if r.status_code == 200 and "blocks" in r.text:
+                        break
+                except Exception:
+                    continue
+            if r is None or r.status_code != 200:
                 return candidates, tags
             ydata = r.json()
             params = ydata["blocks"][0]["params"]
@@ -738,33 +746,123 @@ class BiometricEngine:
             pass
         return candidates
 
-    def _infer_person_query(self, candidates: List[Dict[str, Any]], tags: List[str]) -> Optional[str]:
-        # Prefer ASCII/Latin tags first
-        for t in tags:
-            if re.search(r"[a-zA-Z]{3,}", t):
-                return t
-        # Otherwise extract common proper nouns / titles from top site matches
-        words_freq: Dict[str, int] = {}
-        stop = {
-            "youtube", "instagram", "tiktok", "twitter", "facebook", "video", "photos",
-            "photo", "image", "images", "noticias", "news", "blog", "profile", "perfil",
-            "watch", "free", "online", "with", "from", "para", "como", "sobre", "reddit"
+    async def _ddg_image_discover(
+        self, client: httpx.AsyncClient, query: str, max_results: int = 38
+    ) -> List[Dict[str, Any]]:
+        """Uncensored DuckDuckGo Image Search (kp=-2 / p=-2) for maximum adult & creator coverage."""
+        candidates: List[Dict[str, Any]] = []
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://duckduckgo.com/",
         }
-        for c in candidates[:18]:
-            if not c.get("is_site_match"):
-                continue
+        try:
+            r_init = await client.get(
+                f"https://duckduckgo.com/?q={quote_plus(query)}&kp=-2&ia=images&iax=images",
+                headers=headers,
+                follow_redirects=True,
+                timeout=6.5,
+            )
+            m_vqd = re.search(r"vqd=['\"]?([\d-]+)['\"]?", r_init.text)
+            if not m_vqd:
+                return candidates
+            vqd = m_vqd.group(1)
+            r_img = await client.get(
+                f"https://duckduckgo.com/i.js?l=wt-wt&o=json&q={quote_plus(query)}&vqd={vqd}&f=,,,&p=-2",
+                headers=headers,
+                follow_redirects=True,
+                timeout=7.5,
+            )
+            if r_img.status_code == 200:
+                data = r_img.json()
+                for item in data.get("results", []):
+                    page_url = item.get("url", "")
+                    thumb_url = item.get("thumbnail", "")
+                    orig_img = item.get("image", "")
+                    title = item.get("title", "")
+                    if page_url and (thumb_url or orig_img):
+                        candidates.append({
+                            "page_url": page_url,
+                            "img_url": thumb_url or orig_img,
+                            "fallback_img": orig_img,
+                            "title": title,
+                            "is_site_match": True,
+                        })
+                        if len(candidates) >= max_results:
+                            break
+        except Exception:
+            pass
+        return candidates
+
+    def _infer_person_query(self, candidates: List[Dict[str, Any]], tags: List[str]) -> Optional[str]:
+        generic_words = {
+            "girl", "girls", "woman", "women", "blonde", "brunette", "redhead", "model",
+            "models", "selfie", "portrait", "face", "beauty", "beautiful", "hair", "person",
+            "people", "clothing", "photo", "photos", "image", "images", "female", "lady",
+            "smile", "eyes", "lips", "young", "cute", "hot", "sexy", "babe", "babes",
+            "actress", "celebrity", "wallpaper", "dress", "makeup", "human", "head",
+            "cheek", "chin", "forehead", "eyebrow", "eyelash", "jaw", "neck", "shoulder",
+            "skin", "youtube", "instagram", "tiktok", "twitter", "facebook", "video",
+            "videos", "noticias", "news", "blog", "profile", "perfil", "watch", "free",
+            "online", "with", "from", "para", "como", "sobre", "reddit", "telegram",
+            "onlyfans", "fansly", "fapello", "patreon", "leak", "leaks", "leaked",
+            "full", "best", "top", "new", "page", "site", "home", "index", "gallery",
+            "pics", "pictures", "picture", "movie", "movies", "star", "stars", "uncensored"
+        }
+
+        slug_counts: Dict[str, int] = {}
+
+        # 1. Extract model/creator names directly from structured URL paths
+        url_patterns = [
+            r"(?:pornstar|pornstars|model|models|actress|babe|babes|star|stars|performer|celeb|celebs|eros|channel)/([A-Za-z0-9_-]{3,35})",
+            r"(?:fapello|onlyfans|fansly|linktr\.ee|allmylinks|beacons\.ai|babepedia|freeones|indexxx)\.[a-z]+/(?:babe/|m/)?([A-Za-z0-9_.-]{3,35})",
+            r"(?:instagram|tiktok|x|twitter)\.com/@?([A-Za-z0-9_.]{3,30})",
+        ]
+        ignored_url_parts = {
+            "popular", "explore", "p", "reel", "reels", "stories", "share", "login",
+            "search", "status", "watch", "channel", "results", "user", "r", "u", "s",
+            "home", "about", "videos", "photos", "galleries", "categories", "tags", "top"
+        }
+        for c in candidates:
+            u = c.get("page_url", "")
+            for pat in url_patterns:
+                m = re.search(pat, u, re.IGNORECASE)
+                if m:
+                    raw_slug = unquote(m.group(1)).strip("/._-")
+                    if raw_slug.lower() in ignored_url_parts or raw_slug.isdigit():
+                        continue
+                    clean_slug = re.sub(r"[-_.]", " ", raw_slug).strip()
+                    slug_words = [w for w in clean_slug.split() if w.lower() not in generic_words and len(w) >= 2]
+                    if slug_words:
+                        norm_name = " ".join(slug_words).lower()
+                        if len(norm_name) >= 4:
+                            slug_counts[norm_name] = slug_counts.get(norm_name, 0) + 3
+
+        # 2. Check cbirTags but strictly filter out generic visual descriptors
+        for t in tags:
+            t_clean = t.strip()
+            t_words = re.findall(r"[A-Za-zÀ-ÿ]{2,}", t_clean)
+            if 1 <= len(t_words) <= 3:
+                if all(w.lower() not in generic_words for w in t_words):
+                    cand_tag = " ".join(t_words).lower()
+                    if len(cand_tag) >= 4:
+                        slug_counts[cand_tag] = slug_counts.get(cand_tag, 0) + 4
+
+        # 3. Extract repeated 2-word proper names from candidate titles
+        for c in candidates[:35]:
             title = c.get("title", "")
             tokens = re.findall(r"[A-Za-zÀ-ÿ]{3,}", title)
             for i in range(len(tokens) - 1):
                 w1, w2 = tokens[i], tokens[i + 1]
-                if w1.lower() not in stop and w2.lower() not in stop:
-                    pair = f"{w1} {w2}"
-                    words_freq[pair] = words_freq.get(pair, 0) + 1
-        if words_freq:
-            best_pair, cnt = max(words_freq.items(), key=lambda x: x[1])
-            if cnt >= 1:
-                return best_pair
-        return tags[0] if tags else None
+                if w1.lower() not in generic_words and w2.lower() not in generic_words:
+                    pair = f"{w1} {w2}".lower()
+                    weight = 2 if c.get("is_site_match") else 1
+                    slug_counts[pair] = slug_counts.get(pair, 0) + weight
+
+        if slug_counts:
+            best_name, _ = max(slug_counts.items(), key=lambda x: x[1])
+            return best_name.title()
+        return None
 
     async def run_full_search(
         self,
@@ -838,20 +936,30 @@ class BiometricEngine:
 
                 if person_q:
                     soc_tasks = [
+                        self._ddg_image_discover(
+                            client,
+                            f"{person_q} onlyfans fapello fansly model",
+                            max_results=36
+                        ),
+                        self._ddg_image_discover(
+                            client,
+                            f"{person_q} actress gallery video",
+                            max_results=32
+                        ),
                         self._yandex_ru_person_discover(
                             client,
                             f"{person_q} onlyfans fapello fansly leaked telegram",
-                            max_results=26
+                            max_results=28
                         ),
                         self._yandex_ru_person_discover(
                             client,
                             f"{person_q} instagram tiktok twitter",
-                            max_results=20
+                            max_results=22
                         ),
                         self._bing_person_discover(
                             client,
                             f"{person_q} (site:instagram.com OR site:tiktok.com OR site:x.com OR site:twitter.com OR site:reddit.com)",
-                            max_results=18
+                            max_results=20
                         ),
                     ]
                     soc_res = await asyncio.gather(*soc_tasks, return_exceptions=True)
@@ -867,14 +975,14 @@ class BiometricEngine:
                 if k not in seen_keys:
                     seen_keys.add(k)
                     unique_candidates.append(c)
-                if len(unique_candidates) >= 95:
+                if len(unique_candidates) >= 130:
                     break
 
             if progress_cb:
                 progress_cb("Downloading Images", 72)
 
             # 3. Download candidate images in parallel and run YuNet + SFace Biometric Verification
-            sem = asyncio.Semaphore(24)
+            sem = asyncio.Semaphore(28)
             dl_headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
             }
@@ -963,8 +1071,15 @@ class BiometricEngine:
                         best_phash = c_phash
                         best_b64 = self._encode_base64_jpeg(crop_bgr, quality=86)
 
-            if best_score < 62 or best_emb is None or not best_b64:
+            if best_score < 54 or best_emb is None or not best_b64:
                 continue
+
+            # Boost score when both biometric face AND identified person name in URL/title match
+            if person_q and best_score >= 60:
+                pq_tokens = [w.lower() for w in person_q.split() if len(w) >= 3]
+                haystack = f"{cand.get('page_url', '')} {cand.get('title', '')}".lower()
+                if pq_tokens and all(tok in haystack for tok in pq_tokens):
+                    best_score = max(best_score, min(95, best_score + 8))
 
             cand_emb = best_emb
             cand_phash = best_phash
