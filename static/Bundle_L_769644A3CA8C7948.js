@@ -1,0 +1,1 @@
+window.clickedcreate=!1;window.trycreateaccount=function(){window.location.href.indexOf("/login?create=1")>-1&&window.clickedcreate==!1&&(window.clickedcreate=!0,$("#createaccountbutton").click())};$(document).ready(function(){trycreateaccount()});

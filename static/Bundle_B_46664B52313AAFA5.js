@@ -1,0 +1,1 @@
+$(document).ready(function(){$('[data-toggle="tooltip"]').tooltip();$(".promobutton").on("click",function(){var n=$(".promobutton").text().indexOf("Remove Promo")>=0?"":$(".form-control").val();call_ajax({code:n},"/api/aff_set_promo_code",function(n){n.code==="OK"&&(window.location.href=window.location.href)},wait_icon_ms=300,show_http_error=!0)})});

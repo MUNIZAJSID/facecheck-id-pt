@@ -1,0 +1,150 @@
+<link rel="stylesheet" href="/static/Bundle_V_A3C318FCA3B2770D.css">
+
+
+
+
+<div class="vc-container">
+
+    <h2>Remove Your Photos</h2>
+    <p id="vc-approval-text" style="display:none">These photos will be removed upon approval</p>
+    <div style="clear:both" class="photolist"></div>
+    <details class="guidlisthead vc-ids-details" style="display:none">
+        <summary>Picture ID(s)</summary>
+        <div class="guidlist"></div>
+    </details>
+
+    <p class="vc-empty-state">Select the images above you wish to permanently delete.</p>
+
+    <div id="vc-step2" style="display:none">
+    <h2>Confirm It's You</h2>
+    <p>This quick step helps us prevent unauthorized requests. Processing takes 1–5 business days and is 100% free.</p>
+
+    <div class="vc-options">
+        <!-- Recommended Option -->
+        <div class="vc-card vc-card--recommended">
+            <div class="vc-card-header">
+                <div class="vc-card-title">
+                    <div class="vc-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                            <circle cx="12" cy="13" r="3" />
+                        </svg>
+                    </div>
+                    <h2>Quick Selfie Check</h2>
+                </div>
+            </div>
+            <p class="vc-card-subtitle">Takes less than 30 seconds</p>
+            <ul class="vc-features">
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Use your camera to take a live selfie
+                </li>
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Follow simple prompts to turn your head
+                </li>
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Instant deletion for most requests
+                </li>
+            </ul>
+            <button class="vc-btn vc-btn--primary" id="vc-selfie-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                    <circle cx="12" cy="13" r="3" />
+                </svg>
+                Start Quick Selfie Check
+            </button>
+        </div>
+
+        <p class="vc-id-fallback">Can't take a selfie? <a href="#" id="vc-show-id-card">Upload your ID instead.</a></p>
+
+        <!-- Alternative Option -->
+        <div class="vc-card vc-card--alternative" style="display:none">
+            <div class="vc-card-header">
+                <div class="vc-card-title">
+                    <div class="vc-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <circle cx="8" cy="15" r="2" />
+                        </svg>
+                    </div>
+                    <h2>ID Document Verification</h2>
+                </div>
+            </div>
+            <div class="vc-content-area">
+                <ul class="vc-features" id="vc-id-features">
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Upload your citizen card, driver's license, or passport
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span><strong>For your privacy:</strong> Cover or blur your name, address, and ID number</span>
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Keep expiration date and photo visible
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Your document is permanently deleted after verification
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Use a clear, well-lit photo to avoid delays or rejection
+                    </li>
+                </ul>
+
+                <div class="vc-image-preview" id="vc-image-preview">
+                    <button class="vc-remove-image" id="vc-remove-image" type="button" aria-label="Remove image">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                    <img id="vc-preview-img" src="" alt="ID Document Preview">
+                </div>
+            </div>
+
+            <input type="file" id="vc-file-input" accept="image/*,.heic,.heif,image/heic,image/heif" hidden>
+
+            <button class="vc-btn vc-btn--secondary" id="vc-upload-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload ID Document
+            </button>
+
+            <button class="vc-btn vc-btn--primary vc-btn--complete" id="vc-complete-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Complete Removal Request
+            </button>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+<script src="/static/Bundle_V_2099DEDEA16E4DB5.js" defer></script>

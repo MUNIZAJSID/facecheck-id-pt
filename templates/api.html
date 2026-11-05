@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<title>API de Reconhecimento Facial | Busca Reversa por Rosto | FaceCheck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/img/fonts/Lato_700-638161463380000000-FRESH.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/img/font-awesome/fontawesome-reduced-by-icomoon-638336940160000000-FRESH.woff2">
+<link rel="stylesheet" href="/static/Bundle_FBSSJDL_5674728C717A4A99.css">
+
+<meta name="referrer" content="same-origin">
+<link rel="canonical" href="https://facecheck.id/pt/Face-Search/API">
+<link rel="icon" sizes="any" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="alternate icon" type="image/x-icon" href="/img/favicon.ico">
+<link rel="apple-touch-icon" type="image/svg+xml" href="/img/favicon.svg">
+<meta name="description" content="Integre busca reversa com reconhecimento facial no seu app usando a API REST do FaceCheck. Pesquise na internet pelo rosto. Integração simples, código pronto pra usar e documentação direto ao ponto.">
+
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://facecheck.id/pt/Face-Search/API">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FaceCheck.ID">
+<meta property="og:title" content="API de Reconhecimento Facial | Busca Reversa por Rosto | FaceCheck">
+<meta property="og:description" content="Integre busca reversa com reconhecimento facial no seu app usando a API REST do FaceCheck. Pesquise na internet pelo rosto. Integração simples, código pronto pra usar e documentação direto ao ponto.">
+
+
+<link rel="alternate" hreflang="ar" href="https://facecheck.id/ar/Face-Search/API"><link rel="alternate" hreflang="cs" href="https://facecheck.id/cs/Face-Search/API"><link rel="alternate" hreflang="de" href="https://facecheck.id/de/Face-Search/API"><link rel="alternate" hreflang="en" href="https://facecheck.id/en/Face-Search/API"><link rel="alternate" hreflang="es" href="https://facecheck.id/es/Face-Search/API"><link rel="alternate" hreflang="fr" href="https://facecheck.id/fr/Face-Search/API"><link rel="alternate" hreflang="it" href="https://facecheck.id/it/Face-Search/API"><link rel="alternate" hreflang="ja" href="https://facecheck.id/ja/Face-Search/API"><link rel="alternate" hreflang="ko" href="https://facecheck.id/ko/Face-Search/API"><link rel="alternate" hreflang="pl" href="https://facecheck.id/pl/Face-Search/API"><link rel="alternate" hreflang="pt" href="https://facecheck.id/pt/Face-Search/API"><link rel="alternate" hreflang="ru" href="https://facecheck.id/ru/Face-Search/API"><link rel="alternate" hreflang="tr" href="https://facecheck.id/tr/Face-Search/API"><link rel="alternate" hreflang="zh" href="https://facecheck.id/zh/Face-Search/API"><link rel="alternate" hreflang="x-default" href="https://facecheck.id/en/Face-Search/API">
+
+<style>
+@font-face{font-family:'Lato';font-style:normal;font-weight:400;font-display:swap;src:url(/img/fonts/Lato_400-638161463140000000-FRESH.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Lato';font-style:normal;font-weight:700;font-display:swap;src:url(/img/fonts/Lato_700-638161463380000000-FRESH.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'FontAwesome';src:url('/img/font-awesome/fontawesome-reduced-by-icomoon-638336940160000000-FRESH.woff2');font-weight:normal;font-style:normal;}
+@font-face{font-family:'Elite';src:url('/img/fonts/SpecialElite-Regular-638338581460000000-FRESH.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+.sid_hash #search_console{display:none;}
+.agreedoncl #agreecheck_main{visibility:hidden;}
+#indexedfaces{display: none;}
+</style>
+
+</head>
+<body class="light">
+<script>
+(function() {
+const w=window,d=document;function getCookie(n){var p=n+"=",c=d.cookie.split(";"),i;for (i=0;i<c.length;i++) {var t=c[i].trim();if (t.indexOf(p)===0) return decodeURIComponent(t.substr(p.length));};return "";}
+w.agreed=getCookie('agreedon')===new Date().toDateString();var cl=document.documentElement.classList;if (!w.agreed) cl.add('agreedoncl');var theme=getCookie('theme') || 'light';if (theme==='') theme='light';d.documentElement.dataset.appliedMode=theme;d.body.className=theme;
+w.lang = 'pt';w.user_loged_in= false; 
+w.user_status={"facecount":1531723956,"time":"2026-11-05T01:12:12.5440226Z","online":true,"updating":false,"state":"online","uptime":0,"js_hash":"JBJJSCDSFSDSL_670702D1859DD3E8","js_hash_time":1793474105,"Credits":0,"CreditsDes":null,"TrialSearches":200,"LoggedIn":false,"message":null,"announcement":null};
+if (w.location.hash && !w.location.hash.startsWith("#url=") && !w.location.hash.startsWith("#s-") && w.location.hash.length == 12) cl.add('sid_hash');
+})();
+</script>
+
+    <header >
+
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="margin-bottom: 0px !important;">
+    <div id="navbar">
+
+    <div class="hamburger-menu">
+    <input id="menu__toggle" type="checkbox" aria-label="Dark Mode">
+    <label class="menu__btn" for="menu__toggle">
+      <span></span>
+    </label>
+
+    <ul class="menu__box">
+            <li><a class=" menu__item" href="/pt/buy">Comprar créditos</a></li>
+            <li><a class="menu__item" href="/login?create=1">Criar Nova Conta</a></li>
+            <li><a class="menu__item" href="/login">Entrar</a></li>
+
+    <li><a class="menu__item" href="/">New Search</a></li>
+        <li><a class="menu__item" href="/pt/Face-Search/FAQ">FAQ</a></li>
+<li><a class=" menu__item" href="/pt/RemoveMyPhotos">Solicitação de remoção</a></li>
+        <li><a class=" menu__item" href="/pt/Face-Search/ReverseImageSearchTips">Dicas</a></li>
+    <li><a class="active menu__item" href="/pt/Face-Search/API">API de Busca Facial</a></li>
+    <li class="removemypics2"><a href='#DeleteMyImages' class="menu__item" style="color:red" onclick="return false;">Remove My Photos</a></li>
+    <li id="menudarkswitch"><label class="menu__item" for="checkboxsw1">Alternar para o modo escuro</label>
+        <div class="theme-btn nav">
+            <input type="checkbox" id="checkboxsw1" class="checkbox checkboxsw">
+            <label for="checkboxsw1" class="label">
+                <svg xmlns="http://www.w3.org/2000/svg" class="fa-moon" viewBox="0 0 512 512"><path d="M283 512c79 0 151-36 199-95 7-9-1-21-11-19A201 201 0 0 1 334 27c9-6 7-21-4-23a258 258 0 0 0-47-4 256 256 0 1 0 0 512z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="fa-sun" viewBox="0 0 512 512"><path d="M256 160a96 96 0 1 0 0 192 96 96 0 0 0 0-192zm246 81-94-48 33-100c5-14-8-27-22-22l-100 33-48-94c-6-13-24-13-30 0l-48 94L93 71c-14-5-27 8-22 22l33 100-94 47c-13 7-13 25 0 32l94 47-33 100c-5 14 8 27 22 22l100-33 47 94c7 13 25 13 31 0l48-94 100 33c14 5 27-8 22-22l-33-100 94-47c13-7 13-25 0-32zM346 347a128 128 0 1 1-180-182 128 128 0 0 1 181 182z"/></svg>
+                <span class="ball"></span>
+            </label>
+        </div>                        
+    </li>
+    </ul>
+  </div>
+
+
+
+<a class="navbar-brand logolink" href="/pt"><img src="/img/FaceCheck_logo-639029188200000000-FRESH.svg" class="logo" alt="FaceCheck Home" width="1221" height="149"></a>
+
+<ul class="nav navbar-nav topmenu">
+<li class=" nav-item"><a class="nav-link" href="/pt/Face-Search/FAQ">FAQ</a></li>
+<li class=" nav-item"><a class="nav-link" href="/pt/buy">Comprar créditos</a></li>
+<li class=" nav-item" id='removemypics_main'><a class="nav-link" href="/pt/RemoveMyPhotos">Solicitação de remoção</a></li>
+<li class=" nav-item"><a class="nav-link" href="/pt/Face-Search/ReverseImageSearchTips">Dicas</a></li>
+<li class="active nav-item"><a class="nav-link" href="/pt/Face-Search/API">API de Busca Facial</a></li>
+</ul>
+
+
+
+        <div class="theme-btn menu" data-tip="Alternar para o modo escuro">
+            <input type="checkbox" id="checkboxsw2" class="checkbox checkboxsw" role="switch" aria-label="Alternar para o modo escuro">
+            <label for="checkboxsw2" class="label">
+                <svg class="fa-moon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M283 512c79 0 151-36 199-95 7-9-1-21-11-19A201 201 0 0 1 334 27c9-6 7-21-4-23a258 258 0 0 0-47-4 256 256 0 1 0 0 512z"/></svg>
+                <svg class="fa-sun"  aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 160a96 96 0 1 0 0 192 96 96 0 0 0 0-192zm246 81-94-48 33-100c5-14-8-27-22-22l-100 33-48-94c-6-13-24-13-30 0l-48 94L93 71c-14-5-27 8-22 22l33 100-94 47c-13 7-13 25 0 32l94 47-33 100c-5 14 8 27 22 22l100-33 47 94c7 13 25 13 31 0l48-94 100 33c14 5 27-8 22-22l-33-100 94-47c13-7 13-25 0-32zM346 347a128 128 0 1 1-180-182 128 128 0 0 1 181 182z"/></svg>
+                <span class="ball" aria-hidden="true"></span>
+            </label>
+        </div>
+
+        <ul id="indexedfaces" class="nav navbar-nav navbar-right" style="float:right;flex-direction:row;margin-right:0px;min-width:80px;"><li lang="en" style="text-align:right;font-size: 12px;line-height: 15px;margin-top: -3px;font-family: monospace;"></li>
+        </ul>
+
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="removemypics nav-item" style="display:none"><a href='#DeleteMyImages' class="nav-link" onclick="return false;">Remove My Photos</a></li>
+            <li id="NEWBUT" class="button-24"><a class="new_search_but" href="/pt">Nova Pesquisa</a></li>
+        </ul>
+
+
+
+
+        <div id="profilemenu" style="--credits:''">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="padding:3px 0px 0px 10px" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class='avatar'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 462 462"><path fill="#ced5de" d="M0 0h465v462h-78q-7-52-42-90-14-16-31-26-45-28-97-22l-20 3q-20 5-37 15-39 23-61 63-14 27-19 57H0V0Zm256 104q-26-6-48 1-25 7-39 26t-20 42l-3 20-1 29q0 19 7 35 10 22 34 30 10 4 19 5 24 3 51 1l21-4q36-10 43-46 4-16 3-34-1-21-5-38-4-18-14-33-17-27-48-34Z"/><path fill="#697785" d="M256 104q31 7 48 34 10 15 14 33 4 17 5 38 1 18-3 34-7 36-43 46l-21 4q-27 2-51-1-9-1-19-5-24-8-34-30-7-16-7-35l1-29 3-20q6-23 20-42t39-26q22-7 48-1Zm131 358H80q5-30 19-57 22-40 61-63 17-10 37-15l20-3q52-6 97 22 17 10 31 26 35 38 42 90Z"/></svg></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" role="menu">
+                            <a class="createaccountmenu dropdown-item" href="/login?create=1">Criar Nova Conta</a>
+                            <a class="dropdown-item" href="/login">Entrar</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+
+
+    </div>
+</nav>
+    <div class="topband" style="display:none !important">
+       <ul class="nav navbar-nav navbar-right">
+            <li class="removemypics2 nav-item" style="" ><a href='#DeleteMyImages' class="nav-link" onclick="return false;">Remove My Photos</a></li>
+        </ul>
+
+
+    </div>
+
+
+
+    </header>
+    <div class="container">
+        <main class="pb-3">
+            
+
+
+
+
+<link rel="stylesheet" href="/css/APIpage.css">
+<link rel="stylesheet" href="/lib/highlightjs/atom-one-dark.min.css">
+<link rel="stylesheet" href="/lib/highlightjs/highlightjs-copy.min.css">
+<div class="article">
+
+
+<h1>API de Busca por Rosto</h1>
+<p><strong>Deixe seus usuários buscarem na internet pelo rosto!</strong> Plugue a busca facial do FaceCheck no seu app, site ou software.</p>
+<p>Nossa API REST é simples e fácil de mexer. Cada busca custa 3 créditos, que você compra com cripto por 0.10 USD o crédito.</p>
+
+
+
+<h2>Bora começar</h2>
+<ol><li><button class="createapiaccount">Criar conta da API</button> ou <a class="switchaccount" href='#'>entrar na conta que já existe</a></li>
+<li>Carregue créditos com Bitcoin ou Litecoin</li>
+<li>Busque na internet por rosto via código</li></ol>
+
+
+<h1>Exemplos de código pra busca por rosto</h1>
+<ol><li><strong>Upload</strong> - Mande uma imagem como <code>multipart/form-data</code> pro <code>/api/upload_pic</code> e receba um <code>id_search</code></li>
+<li><strong>Busca</strong> - Mande o <code>id_search</code> pro <code>/api/search</code> pra rodar a busca e acompanhar o andamento</li>
+<li><strong>Resultados</strong> - Percorra o JSON com os resultados</li></ol>
+<p>Pra documentação completa dos endpoints e estrutura de dados, confira a <a href="/Swagger/index.html" target="_blank">Especificação Swagger do FaceCheck</a>.</p>
+<h2>Modo de teste</h2>
+<p>O código de exemplo vem com <code>TESTING_MODE=True</code> por padrão. No modo de teste, só 100.000 rostos são analisados. As buscas rodam rápido, não pesam no servidor e não gastam seus créditos, mas os resultados não vão ter utilidade.</p>
+<p>Quando quiser ir pra valer, coloque <code>TESTING_MODE=False</code>.</p>
+
+
+<div class="wrapper">
+  <div class="tabs">
+    <nav class="tabs__nav" role="tablist" aria-label="Code samples">
+      <button class="tabs__btn is-active" id="tab-1-btn" data-tab-target="tab-1" type="button" role="tab" aria-selected="true" aria-controls="tab-1">Python</button>
+      <button class="tabs__btn" id="tab-2-btn" data-tab-target="tab-2" type="button" role="tab" aria-selected="false" aria-controls="tab-2">C#</button>
+      <button class="tabs__btn" id="tab-3-btn" data-tab-target="tab-3" type="button" role="tab" aria-selected="false" aria-controls="tab-3">Node.js</button>
+      <button class="tabs__btn" id="tab-4-btn" data-tab-target="tab-4" type="button" role="tab" aria-selected="false" aria-controls="tab-4">TypeScript</button>
+      <button class="tabs__btn" id="tab-5-btn" data-tab-target="tab-5" type="button" role="tab" aria-selected="false" aria-controls="tab-5">Java</button>
+      <button class="tabs__btn" id="tab-6-btn" data-tab-target="tab-6" type="button" role="tab" aria-selected="false" aria-controls="tab-6">C++</button>
+      <button class="tabs__btn" id="tab-7-btn" data-tab-target="tab-7" type="button" role="tab" aria-selected="false" aria-controls="tab-7">Kotlin</button>
+      <button class="tabs__btn" id="tab-8-btn" data-tab-target="tab-8" type="button" role="tab" aria-selected="false" aria-controls="tab-8">Rust</button>
+    </nav>
+
+    <div class="tabs__content">
+      <div class="tabs__pane is-visible" id="tab-1" role="tabpanel" aria-labelledby="tab-1-btn">
+        <pre><code class="language-python">import time
+import requests
+import urllib.request
+TESTING_MODE = True
+APITOKEN = 'YOUR_API_TOKEN' # Your API Token
+
+# Download the photo of the person you want to find
+urllib.request.urlretrieve('https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300', "daniel.jpg")
+image_file = 'daniel.jpg' 
+
+def search_by_face(image_file):
+    if TESTING_MODE:
+        print('****** TESTING MODE search, results are inacurate, and queue wait is long, but credits are NOT deducted ******')
+
+    site='https://facecheck.id'
+    headers = {'accept': 'application/json', 'Authorization': APITOKEN}
+    files = {'images': open(image_file, 'rb'), 'id_search': None}
+    response = requests.post(site+'/api/upload_pic', headers=headers, files=files).json()
+
+    if response['error']:
+        return f"{response['error']} ({response['code']})", None
+
+    id_search = response['id_search']
+    print(response['message'] + ' id_search='+id_search)
+    json_data = {'id_search': id_search, 'with_progress': True, 'status_only': False, 'demo': TESTING_MODE}
+
+    while True:
+        response = requests.post(site+'/api/search', headers=headers, json=json_data).json()
+        if response['error']:
+            return f"{response['error']} ({response['code']})", None
+        if response['output']:
+            return None, response['output']['items']
+        print(f'{response["message"]} progress: {response["progress"]}%')
+        time.sleep(1)
+
+
+# Search the Internet by face
+error, urls_images = search_by_face(image_file)
+
+if urls_images:
+    for im in urls_images:      # Iterate search results
+        score = im['score']     # 0 to 100 score how well the face is matching found image
+        url = im['url']         # url to webpage where the person was found
+        image_base64 = im['base64']     # thumbnail image encoded as base64 string
+        print(f"{score} {url} {image_base64[:32]}...")
+else:
+    print(error)</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-2" role="tabpanel" aria-labelledby="tab-2-btn">
+        <pre><code class="language-cs">using System.Net;
+
+namespace FaceCheckAPI
+{
+    public class SearchItem
+    {
+        public string? guid { get; set; }
+        public int score { get; set; }
+        public string? base64 { get; set; }
+        public string? url { get;  set; }
+        public int index { get; set; } = -1;
+    }
+
+    public class Search_Results
+    {
+        public List&lt;SearchItem&gt;? items { get; set; }
+    }
+
+    public class InputImage
+    {
+        public string? base64 { get; set; }
+        public string? id_pic { get; set; }
+    }
+
+    public class BrowserJsonResponse
+    {
+        public string? id_search { get; set; }
+        public string? message { get; set; }
+        public int? progress { get; set; }
+        public string? error { get; set; }
+        public string? code { get; set; }
+        public Search_Results? output { get; set; }
+        public List&lt;InputImage&gt;? input { get; set; }
+    }
+
+    public class FaceCheckAPI
+    {
+        static bool TESTING_MODE = true;
+        static string APITOKEN = "YOUR_API_TOKEN"; // Your API Token
+        static string site = "https://facecheck.id";
+
+        static readonly HttpClient client = new HttpClient();
+        static FaceCheckAPI()
+        {
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", APITOKEN);
+        }
+        public static async Task&lt;List&lt;SearchItem&gt;?&gt; Search_by_FaceAsync(string image_file)
+        {
+            if (TESTING_MODE) Console.WriteLine("****** TESTING MODE search, results are inaccurate, and queue wait is long, but credits are NOT deducted ******");
+            using var content = new MultipartFormDataContent("Upload----" + DateTime.Now.Ticks.ToString("x"));
+            using var ImageStream = new FileStream(image_file, FileMode.Open, FileAccess.Read, FileShare.None);
+            content.Add(new StreamContent(ImageStream), "images", Path.GetFileName(image_file));
+            using var message = await client.PostAsync(site + "/api/upload_pic", content);
+            var input = await message.Content.ReadAsStringAsync();
+            BrowserJsonResponse? a = System.Text.Json.JsonSerializer.Deserialize&lt;BrowserJsonResponse?&gt;(input);
+            if (a.error != null) throw new Exception(a.error);
+            Console.WriteLine(a.message + " id_search=" + a.id_search);
+
+            while (true)
+            {
+                BrowserJsonResponse? b = await PostSearch(Convert.ToString(a.id_search));
+                if (b.error != null) throw new Exception(b.error);
+                if (b.output != null) return b.output.items;
+                Console.WriteLine($"{b.message} Progress: {b.progress}%");
+                await Task.Delay(1000);
+            }
+
+        }
+            
+        
+
+        private static async Task&lt;BrowserJsonResponse?&gt; PostSearch(string? id_search)
+        {
+            using var _Body = new StringContent($"{{\"id_search\":\"{id_search}\",\"with_progress\":true,\"status_only\":false,\"demo\":{(TESTING_MODE ? "true" : "false")}}}");
+            _Body.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            using var msg = await client.PostAsync(site + "/api/search", _Body);
+            string json = await msg.Content.ReadAsStringAsync();
+            return Utf8Json.JsonSerializer.Deserialize&lt;BrowserJsonResponse&gt;(json);
+        }
+
+    }
+
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            try
+            {
+                //download a test image 
+                using (WebClient webClient = new WebClient())
+                    webClient.DownloadFile("https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300", "daniel.jpg");
+                
+
+                //Search the Internet by face
+                var images = await FaceCheckAPI.Search_by_FaceAsync("daniel.jpg");
+                if (images != null)
+                    foreach (SearchItem im in images) //Iterate search results
+                    {
+                        var score = im.score;     // 0 to 100 score how well the face is matching found image
+                        var url = im.url;         // url to webpage where the person was found
+                        var image_base64 = im.base64;     // thumbnail image encoded as base64 string
+                        //convert to binary .WEBP image
+                        byte[] webp_image = Convert.FromBase64String(image_base64.Substring(image_base64.IndexOf(' ') + 1));
+                        Console.WriteLine($"{score} {url} {image_base64?.Substring(0, 32)}...");
+                    }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
+            Console.ReadKey();
+        }
+    }
+}</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-3" role="tabpanel" aria-labelledby="tab-3-btn">
+        <pre><code class="language-js">const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+const https = require('https');
+
+
+const TESTING_MODE = true;
+const APITOKEN = 'YOUR_API_TOKEN';
+
+
+const downloadImage = (url, filename) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const file = fs.createWriteStream(filename);
+    https.get(url, response =&gt; {
+      response.pipe(file);
+      file.on('finish', () =&gt; {
+        file.close(resolve);
+      });
+      file.on('error', reject);
+    });
+  });
+};
+
+
+const search_by_face = async (image_file) =&gt; {
+    if (TESTING_MODE) {
+        console.log('****** TESTING MODE search, results are inacurate, and queue wait is long, but credits are NOT deducted ******');
+    }
+
+
+    const site = 'https://facecheck.id';
+    const headers = {
+        accept: 'application/json',
+        Authorization: APITOKEN,
+    };
+
+
+    let form = new FormData();
+    form.append('images', fs.createReadStream(image_file));
+    form.append('id_search', '');
+
+
+    let response = await axios.post(site+'/api/upload_pic', form, { headers: {
+        ...form.getHeaders(),
+        'accept': 'application/json',
+        'Authorization': APITOKEN
+    } });
+    response = response.data;
+
+
+    if (response.error) {
+        return [`${response.error} (${response.code})`, null];
+    }
+
+
+    const id_search = response.id_search;
+    console.log(`${response.message} id_search=${id_search}`);
+    const json_data = {
+        id_search: id_search,
+        with_progress: true,
+        status_only: false,
+        demo: TESTING_MODE,
+    };
+
+
+    while (true) {
+        response = await axios.post(site+'/api/search', json_data, { headers: headers });
+        response = response.data;
+        if (response.error) {
+            return [`${response.error} (${response.code})`, null];
+        }
+        if (response.output) {
+            return [null, response.output.items];
+        }
+        console.log(`${response.message} progress: ${response.progress}%`);
+        await new Promise(r =&gt; setTimeout(r, 1000));
+    }
+};
+
+
+const run = async () =&gt; {
+    await downloadImage('https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300', 'daniel.jpg');
+
+    // Search the Internet by face
+    const [error, urls_images] = await search_by_face('daniel.jpg');
+
+
+  if (urls_images) {
+    urls_images.forEach(im =&gt; {
+        const score = im.score;     // 0 to 100 score how well the face is matching found image
+        const url = im.url;         // url to webpage where the person was found
+        const image_base64 = im.base64;     // thumbnail image encoded as base64 string
+        console.log(`${score} ${url} ${image_base64.slice(0, 32)}...`);
+    });
+  } else {
+    console.log(error);
+  }
+}
+
+
+run().catch(console.error);
+
+
+
+</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-4" role="tabpanel" aria-labelledby="tab-4-btn">
+        <pre><code class="language-ts">const TESTING_MODE = true;
+const APITOKEN = 'YOUR_API_TOKEN';
+
+async function downloadTestImage(url: string, filepath: string): Promise&lt;void&gt; {
+    const fs = await import('fs');
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    fs.writeFileSync(filepath, Buffer.from(buffer));
+}
+
+async function searchByFace(imageFile: string) {
+    if (TESTING_MODE) {
+        console.log('****** TESTING MODE - results are inaccurate, queue is slow, but no credits deducted ******');
+    }
+
+    const fs = await import('fs');
+    const site = 'https://facecheck.id';
+    const headers = { 'Authorization': APITOKEN };
+
+    // Upload image
+    const formData = new FormData();
+    const imageBuffer = fs.readFileSync(imageFile);
+    const imageBlob = new Blob([imageBuffer]);
+    formData.append('images', imageBlob, imageFile);
+
+    const uploadRes = await fetch(`${site}/api/upload_pic`, {
+        method: 'POST',
+        headers,
+        body: formData
+    });
+    const uploadData = await uploadRes.json();
+
+    if (uploadData.error) {
+        throw new Error(`${uploadData.error} (${uploadData.code})`);
+    }
+
+    const idSearch = uploadData.id_search;
+    console.log(`${uploadData.message} id_search=${idSearch}`);
+
+    // Poll for results
+    const searchPayload = {
+        id_search: idSearch,
+        with_progress: true,
+        status_only: false,
+        demo: TESTING_MODE
+    };
+
+    while (true) {
+        const searchRes = await fetch(`${site}/api/search`, {
+            method: 'POST',
+            headers: { ...headers, 'Content-Type': 'application/json' },
+            body: JSON.stringify(searchPayload)
+        });
+        const searchData = await searchRes.json();
+
+        if (searchData.error) {
+            throw new Error(`${searchData.error} (${searchData.code})`);
+        }
+
+        if (searchData.output) {
+            return searchData.output.items;
+        }
+
+        console.log(`${searchData.message} progress: ${searchData.progress}%`);
+        await new Promise(resolve =&gt; setTimeout(resolve, 1000));
+    }
+}
+
+// Main
+(async () =&gt; {
+    await downloadTestImage(
+        'https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300',
+        'daniel.jpg'
+    );
+
+    try {
+        const results = await searchByFace('daniel.jpg');
+        for (const item of results) {
+            console.log(`${item.score} ${item.url} ${item.base64.substring(0, 32)}...`);
+        }
+    } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error));
+    }
+})();</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-5" role="tabpanel" aria-labelledby="tab-5-btn">
+        <pre><code class="language-java">import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.NoRouteToHostException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+public class API_TEST {
+    private static final boolean TESTING_MODE = true;
+    private static final String APITOKEN = "YOUR_API_TOKEN";
+    private static final String IMAGE_URL = "https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300";
+
+    public static void main(String[] args) {
+        try {
+            String imageFilePath = downloadImage();
+            JSONArray urlsImages;
+
+            if (TESTING_MODE) {
+                System.out.println("****** TESTING MODE search, results are bad, and queue wait is long, but credits are NOT deducted ******");
+            }
+
+            String site = "https://facecheck.id";
+            String authToken = APITOKEN;
+
+            // Upload the image
+            JSONObject uploadResponse = uploadImage(site, authToken, imageFilePath);
+            // System.out.println(uploadResponse);
+            if (uploadResponse.has("error") && !uploadResponse.isNull("error")) {
+                System.out.println("Error Code: " + uploadResponse.getString("code") + " , " + uploadResponse.getString("error"));
+                return;
+            }
+
+            String idSearch = uploadResponse.getString("id_search");
+            System.out.println(uploadResponse.getString("message") + " id_search=" + idSearch);
+
+            JSONObject jsonData = new JSONObject()
+                    .put("id_search", idSearch)
+                    .put("with_progress", true)
+                    .put("status_only", false)
+                    .put("demo", TESTING_MODE);
+
+            while (true) {
+                JSONObject searchResponse = searchImage(site, authToken, jsonData);
+                if (searchResponse.has("error") && !searchResponse.isNull("error")) {
+                    System.out.println("Error Code: " + searchResponse.getString("code") + " , " + searchResponse.getString("error"));
+                    return;
+                }
+
+                if (searchResponse.has("output") && !searchResponse.isNull("output")) {
+                    urlsImages = searchResponse.getJSONObject("output").getJSONArray("items");
+                    break;
+                }
+
+                System.out.println(searchResponse.getString("message") + " progress: " + searchResponse.getInt("progress") + "%");
+                Thread.sleep(1000);
+            }
+
+            if (urlsImages != null) {
+                for (int i = 0; i &lt; urlsImages.length(); i++) {
+                    JSONObject im = urlsImages.getJSONObject(i);
+                    int score = im.getInt("score");
+                    String url = im.getString("url");
+                    String imageBase64 = im.getString("base64");
+
+                    System.out.println(score + " " + url + " " + imageBase64.substring(0, 32) + "...");
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getImageExtensionFromURL(String imageUrl) throws MalformedURLException {
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath();
+            String fileName = path.substring(path.lastIndexOf('/') + 1);
+            return fileName.substring(fileName.lastIndexOf('.') + 1);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+    }
+
+    private static String downloadImage() throws IOException {
+        String imageFileName = "SearchImage." + getImageExtensionFromURL(IMAGE_URL) ;
+        URL imageUrl = new URL(IMAGE_URL);
+        try (InputStream in = imageUrl.openStream()) {
+            Files.copy(in, Paths.get(imageFileName), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+        return imageFileName;
+    }
+
+    private static JSONObject uploadImage(String site, String authToken, String imageFilePath) throws IOException {
+        String boundary = "*****" + Long.toHexString(System.currentTimeMillis()) + "*****";
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+
+        URL url = new URL(site + "/api/upload_pic");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("accept", "application/json");
+        connection.setRequestProperty("Authorization", authToken);
+        connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+        try (DataOutputStream dos = new DataOutputStream(connection.getOutputStream())) {
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"images\";filename=\"" + imageFilePath + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+
+            try (FileInputStream fis = new FileInputStream(imageFilePath)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    dos.write(buffer, 0, bytesRead);
+                }
+            }
+
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            dos.flush();
+        }
+
+        try (InputStream is = connection.getInputStream();
+             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+            return new JSONObject(response.toString());
+        }
+    }
+
+    private static JSONObject searchImage(String site, String authToken, JSONObject jsonData) throws IOException {
+        URL url = new URL(site + "/api/search");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("accept", "application/json");
+        connection.setRequestProperty("Authorization", authToken);
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        try (DataOutputStream dos = new DataOutputStream(connection.getOutputStream())) {
+            dos.writeBytes(jsonData.toString());
+            dos.flush();
+        }  catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+
+        try (InputStream is = connection.getInputStream();
+             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+            return new JSONObject(response.toString());
+        } catch (NoRouteToHostException exception) {
+            System.out.println(exception.getMessage());
+            throw exception;
+        }
+    }
+
+
+}
+</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-6" role="tabpanel" aria-labelledby="tab-6-btn">
+        <pre><code class="language-cpp">//#define CURL_STATICLIB
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+#include "curl/curl.h"
+#include "json/json.h"
+
+using namespace std;
+
+const bool TESTING_MODE = true;
+const std::string APITOKEN = "YOUR_API_TOKEN";
+const std::string IMAGE_URL = "https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300";
+
+std::string getImageExtensionFromURL(const std::string& url) {
+    // Find the last occurrence of '.' in the URL
+    size_t dotPos = url.find_last_of('.');
+
+    if (dotPos == std::string::npos) {
+        // No extension found
+        return "";
+    }
+
+    // Find the first occurrence of '?' after the last dot position
+    size_t queryParamPos = url.find_first_of('?', dotPos);
+
+    // Extract the extension from the URL
+    std::string extension;
+    if (queryParamPos != std::string::npos) {
+        extension = url.substr(dotPos + 1, queryParamPos - dotPos - 1);
+    } else {
+        extension = url.substr(dotPos + 1);
+    }
+
+    return "jpg";
+}
+
+std::string downloadImage() {
+    std::string imageFileName = "SearchImage." + getImageExtensionFromURL(IMAGE_URL);
+    cout &lt;&lt; "MESSAGE: Downloading Image..." &lt;&lt; endl;
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        std::cout &lt;&lt; "Error: Failed to initialize CURL." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    
+    FILE* imageFile;
+#ifdef _WIN32
+    fopen_s(&imageFile, imageFileName.c_str(), "wb");
+#else
+    imageFile = fopen(imageFileName.c_str(), "wb");
+#endif
+    if (!imageFile) {
+        std::cout &lt;&lt; "Error: Failed to create image file." &lt;&lt; std::endl;
+        curl_easy_cleanup(curl);
+        exit(EXIT_FAILURE);
+    }
+
+    curl_easy_setopt(curl, CURLOPT_URL, IMAGE_URL.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, imageFile);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+    CURLcode res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    fclose(imageFile);
+
+    if (res != CURLE_OK) {
+        std::cout &lt;&lt; "Error: Failed to download image." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    return imageFileName;
+}
+
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output) {
+    size_t totalSize = size * nmemb;
+    output-&gt;append(static_cast&lt;char*&gt;(contents), totalSize);
+    return totalSize;
+}
+
+Json::Value uploadImage(const std::string& site, const std::string& authToken, const std::string& imageFilePath) {
+    std::string boundary = "*****" + std::to_string(std::time(nullptr)) + "*****";
+
+    std::string url = site + "/api/upload_pic";
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        std::cout &lt;&lt; "Error: Failed to initialize CURL." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    struct curl_slist* headers = nullptr;
+    headers = curl_slist_append(headers, ("Authorization: " + authToken).c_str());
+    headers = curl_slist_append(headers, "accept: application/json");
+
+    std::string responseString; // To store the response data
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_POST, 1L);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+    // Create the form data
+    curl_mime* form = curl_mime_init(curl);
+    curl_mimepart* part = curl_mime_addpart(form);
+    curl_mime_name(part, "images");
+    curl_mime_filedata(part, imageFilePath.c_str());
+
+    // Attach the form data to the request
+    curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+
+    // Set the write callback function
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    // Set the pointer to responseString as the user data to pass to the callback function
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responseString);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+    CURLcode res = curl_easy_perform(curl);
+    curl_slist_free_all(headers);
+    curl_mime_free(form);
+    curl_easy_cleanup(curl);
+
+    if (res != CURLE_OK) {
+        std::cout &lt;&lt; "Error: Failed to upload image." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    Json::Value response;
+    Json::CharReaderBuilder reader;
+    std::string errors;
+    std::istringstream iss(responseString);
+    if (!Json::parseFromStream(reader, iss, &response, &errors)) {
+        std::cout &lt;&lt; "Error: Failed to parse JSON response." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+    return response;
+}
+
+Json::Value searchImage(const std::string& site, const std::string& authToken, const Json::Value& jsonData) {
+    std::string url = site + "/api/search";
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        std::cout &lt;&lt; "Error: Failed to initialize CURL." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    struct curl_slist* headers = nullptr;
+    headers = curl_slist_append(headers, ("Authorization: " + authToken).c_str());
+    headers = curl_slist_append(headers, "accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    string responseString;
+    std::string jsonDataStr = jsonData.toStyledString();
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_POST, 1L);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonDataStr.c_str());
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+    //curl_easy_setopt(curl, CURLOPT_WRITEDATA, stdout);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    // Set the pointer to responseString as the user data to pass to the callback function
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responseString);
+
+    // Set the option to suppress the output
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+    CURLcode res = curl_easy_perform(curl);
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+
+    if (res != CURLE_OK) {
+        std::cout &lt;&lt; "Error: Failed to perform search." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    Json::Value response;
+    Json::CharReaderBuilder reader;
+    std::string errors;
+    std::istringstream iss(responseString);
+    if (!Json::parseFromStream(reader, iss, &response, &errors)) {
+        std::cout &lt;&lt; "Error: Failed to parse JSON response." &lt;&lt; std::endl;
+        exit(EXIT_FAILURE);
+    }
+    return response;
+}
+
+int main() {
+    try {
+        std::string imageFilePath = downloadImage();
+        Json::Value urlsImages;
+
+        if (TESTING_MODE) {
+            std::cout &lt;&lt; "****** TESTING MODE search, results are bad, but credits are NOT deducted ******" &lt;&lt; std::endl;
+        }
+
+        std::string site = "https://facecheck.id";
+        std::string authToken = APITOKEN;
+
+        // Upload the image
+        Json::Value uploadResponse = uploadImage(site, authToken, imageFilePath);
+        if(uploadResponse.isMember("error")) {
+            if (uploadResponse.isMember("error") && !uploadResponse["error"].isNull()) {
+                std::cout &lt;&lt; "Error Code: " &lt;&lt; uploadResponse["code"].asString() &lt;&lt; " , " &lt;&lt; uploadResponse["error"].asString() &lt;&lt; std::endl;
+                return 1;
+            }
+        }
+
+        std::string idSearch = uploadResponse["id_search"].asString();
+        std::cout &lt;&lt; uploadResponse["message"].asString() &lt;&lt; " id_search=" &lt;&lt; idSearch &lt;&lt; std::endl;
+
+        Json::Value jsonData;
+        jsonData["id_search"] = idSearch;
+        jsonData["with_progress"] = true;
+        jsonData["status_only"] = false;
+        jsonData["demo"] = TESTING_MODE;
+
+        while (true) {
+            Json::Value searchResponse = searchImage(site, authToken, jsonData);
+            if (searchResponse.isMember("error") && !searchResponse["error"].isNull()) {
+                std::cout &lt;&lt; "Error Code: " &lt;&lt; searchResponse["code"].asString() &lt;&lt; " , " &lt;&lt; searchResponse["error"].asString() &lt;&lt; std::endl;
+                return 1;
+            }
+
+            if (searchResponse.isMember("output") && !searchResponse["output"].isNull()) {
+                urlsImages = searchResponse["output"]["items"];
+                break;
+            }
+
+            std::cout&lt;&lt; searchResponse["message"].asString() &lt;&lt; " progress: " &lt;&lt; searchResponse["progress"] &lt;&lt; "%" &lt;&lt; std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+
+        cout &lt;&lt; "MESSAGE: Image Search Completed!" &lt;&lt; endl;
+        if (!urlsImages.isNull()) {
+            for (unsigned int i = 0; i &lt; urlsImages.size(); ++i) {
+                Json::Value im = urlsImages[i];
+                int score = im["score"].asInt();
+                std::string url = im["url"].asString();
+                std::string imageBase64 = im["base64"].asString();
+
+                std::cout &lt;&lt; score &lt;&lt; " " &lt;&lt; url &lt;&lt; " " &lt;&lt; imageBase64.substr(0, 32) &lt;&lt; "..." &lt;&lt; std::endl;
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        std::cout &lt;&lt; "Exception: " &lt;&lt; e.what() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    return 0;
+}</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-7" role="tabpanel" aria-labelledby="tab-7-btn">
+        <pre><code class="language-kotlin">import org.json.JSONArray
+import org.json.JSONObject
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
+object FaceCheck {
+    private const val TESTING_MODE = true
+    private const val APITOKEN = "YOUR_API_TOKEN" // Your API Token
+    private const val IMAGE_URL = "https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300"
+
+    @JvmStatic
+    fun main(args: Array&lt;String&gt;) {
+        try {
+            val imageFilePath = downloadImage()
+            val urlsImages: JSONArray?
+
+            if (TESTING_MODE) {
+                println("****** TESTING MODE search, results are bad, but credits are NOT deducted ******")
+            }
+
+            val site = "https://facecheck.id"
+            val authToken = APITOKEN
+
+            // Upload the image
+            val uploadResponse = uploadImage(site, authToken, imageFilePath)
+            if (uploadResponse.has("error") && !uploadResponse.isNull("error")) {
+                println(
+                    "Error Code: " + uploadResponse.getString("code") + " , " + uploadResponse.getString("error")
+                )
+                return
+            }
+
+            val idSearch = uploadResponse.getString("id_search")
+            println(uploadResponse.getString("message") + " id_search=$idSearch")
+
+            val jsonData = JSONObject()
+                .put("id_search", idSearch)
+                .put("with_progress", true)
+                .put("status_only", false)
+                .put("demo", TESTING_MODE)
+
+            while (true) {
+                val searchResponse = searchImage(site, authToken, jsonData)
+                if (searchResponse.has("error") && !searchResponse.isNull("error")) {
+                    println(
+                        "Error Code: " + searchResponse.getString("code") + " , " + searchResponse.getString("error")
+                    )
+                    return
+                }
+
+                if (searchResponse.has("output") && !searchResponse.isNull("output")) {
+                    urlsImages = searchResponse.getJSONObject("output").getJSONArray("items")
+                    break
+                }
+
+                println(
+                    searchResponse.getString("message") + " progress: " + searchResponse.getInt("progress") + "%"
+                )
+                Thread.sleep(1000)
+            }
+
+            if (urlsImages != null) {
+                for (i in 0 until urlsImages.length()) {
+                    val im = urlsImages.getJSONObject(i)
+                    val score = im.getInt("score")
+                    val url = im.getString("url")
+                    val imageBase64 = im.getString("base64")
+
+                    println("$score $url ${imageBase64.substring(0, 32)}...")
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun downloadImage(): String {
+        val imageFileName = "SearchImage.${getImageExtensionFromURL(IMAGE_URL)}"
+        val imageUrl = URL(IMAGE_URL)
+        imageUrl.openStream().use { `in` -&gt;
+            Files.copy(`in`, Paths.get(imageFileName), StandardCopyOption.REPLACE_EXISTING)
+        }
+        return imageFileName
+    }
+
+    @Throws(IOException::class)
+    private fun uploadImage(site: String, authToken: String, imageFilePath: String): JSONObject {
+        val boundary = "*****" + java.lang.Long.toHexString(System.currentTimeMillis()) + "*****"
+        val lineEnd = "\r\n"
+        val twoHyphens = "--"
+
+        val url = URL("$site/api/upload_pic")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.doOutput = true
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("accept", "application/json")
+        connection.setRequestProperty("Authorization", authToken)
+        connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=$boundary")
+
+        DataOutputStream(connection.outputStream).use { dos -&gt;
+            dos.writeBytes(twoHyphens + boundary + lineEnd)
+            dos.writeBytes("Content-Disposition: form-data; name=\"images\";filename=\"$imageFilePath\"$lineEnd")
+            dos.writeBytes(lineEnd)
+
+            FileInputStream(imageFilePath).use { fis -&gt;
+                val buffer = ByteArray(1024)
+                var bytesRead: Int
+                while (fis.read(buffer).also { bytesRead = it } != -1) {
+                    dos.write(buffer, 0, bytesRead)
+                }
+            }
+
+            dos.writeBytes(lineEnd)
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
+            dos.flush()
+        }
+
+        val response = StringBuilder()
+        connection.inputStream.bufferedReader().use { br -&gt;
+            var line: String?
+            while (br.readLine().also { line = it } != null) {
+                response.append(line)
+            }
+        }
+        return JSONObject(response.toString())
+    }
+
+    @Throws(IOException::class)
+    private fun searchImage(site: String, authToken: String, jsonData: JSONObject): JSONObject {
+        val url = URL("$site/api/search")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.doOutput = true
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("accept", "application/json")
+        connection.setRequestProperty("Authorization", authToken)
+        connection.setRequestProperty("Content-Type", "application/json")
+
+        DataOutputStream(connection.outputStream).use { dos -&gt;
+            dos.writeBytes(jsonData.toString())
+            dos.flush()
+        }
+
+        val response = StringBuilder()
+        connection.inputStream.bufferedReader().use { br -&gt;
+            var line: String?
+            while (br.readLine().also { line = it } != null) {
+                response.append(line)
+            }
+        }
+
+        return JSONObject(response.toString())
+    }
+
+    @Throws(MalformedURLException::class)
+    fun getImageExtensionFromURL(imageUrl: String): String {
+        try {
+            val url = URL(imageUrl)
+            val path = url.path
+            val fileName = path.substring(path.lastIndexOf('/') + 1)
+            return fileName.substring(fileName.lastIndexOf('.') + 1)
+        } catch (exception: Exception) {
+            // If any error occurs, return null or an appropriate default value
+            println(exception.message)
+            throw exception
+        }
+    }
+}</code></pre>
+      </div>
+      <div class="tabs__pane" id="tab-8" role="tabpanel" aria-labelledby="tab-8-btn">
+        <pre><code class="language-rust">use reqwest;
+use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::Write;
+use tokio;
+
+const TESTING_MODE: bool = true;
+const API_TOKEN: &str = "YOUR_API_TOKEN";
+
+#[derive(Debug, Deserialize)]
+struct UploadResponse {
+    error: Option&lt;String&gt;,
+    code: Option&lt;String&gt;,
+    id_search: Option&lt;String&gt;,
+    message: Option&lt;String&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+struct SearchResponse {
+    error: Option&lt;String&gt;,
+    code: Option&lt;String&gt;,
+    message: Option&lt;String&gt;,
+    progress: Option&lt;u32&gt;,
+    output: Option&lt;SearchOutput&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+struct SearchOutput {
+    items: Vec&lt;SearchResult&gt;,
+}
+
+#[derive(Debug, Deserialize)]
+struct SearchResult {
+    score: f64,
+    url: String,
+    base64: String,
+}
+
+#[derive(Debug, Serialize)]
+struct SearchRequest {
+    id_search: String,
+    with_progress: bool,
+    status_only: bool,
+    demo: bool,
+}
+
+async fn download_file(url: &str, filename: &str) -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let response = reqwest::get(url).await?;
+    let bytes = response.bytes().await?;
+    
+    let mut file = File::create(filename)?;
+    file.write_all(&bytes.to_vec())?;
+    
+    Ok(())
+}
+
+async fn search_by_face(image_file: &str) -&gt; Result&lt;Vec&lt;SearchResult&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    if TESTING_MODE {
+        println!("****** TESTING MODE search, results are inaccurate, and queue wait is long, but credits are NOT deducted ******");
+    }
+    
+    let site = "https://facecheck.id";
+    let client = reqwest::Client::new();
+    
+    // Upload the image
+    let file = tokio::fs::read(image_file).await?;
+    let part = reqwest::multipart::Part::bytes(file)
+        .file_name(image_file.to_string())
+        .mime_str("image/jpeg")?;
+    
+    let form = reqwest::multipart::Form::new()
+        .part("images", part);
+    
+    let upload_response: UploadResponse = client
+        .post(format!("{}/api/upload_pic", site))
+        .header("accept", "application/json")
+        .header("Authorization", API_TOKEN)
+        .multipart(form)
+        .send()
+        .await?
+        .json()
+        .await?;
+    
+    if let Some(error) = upload_response.error {
+        return Err(format!("{} ({})", error, upload_response.code.unwrap_or_default()).into());
+    }
+    
+    let id_search = upload_response.id_search
+        .ok_or("No id_search in response")?;
+    
+    println!("{} id_search={}", upload_response.message.unwrap_or_default(), id_search);
+    
+    // Poll for results
+    let search_request = SearchRequest {
+        id_search: id_search.clone(),
+        with_progress: true,
+        status_only: false,
+        demo: TESTING_MODE,
+    };
+    
+    loop {
+        let search_response: SearchResponse = client
+            .post(format!("{}/api/search", site))
+            .header("accept", "application/json")
+            .header("Authorization", API_TOKEN)
+            .json(&search_request)
+            .send()
+            .await?
+            .json()
+            .await?;
+        
+        if let Some(error) = search_response.error {
+            return Err(format!("{} ({})", error, search_response.code.unwrap_or_default()).into());
+        }
+        
+        if let Some(output) = search_response.output {
+            return Ok(output.items);
+        }
+        
+        println!(
+            "{} progress: {}%",
+            search_response.message.unwrap_or_default(),
+            search_response.progress.unwrap_or(0)
+        );
+        
+        tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+    }
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    // Download the photo
+    let image_url = "https://www.indiewire.com/wp-content/uploads/2018/01/daniel-craig.jpg?w=300";
+    let image_file = "daniel.jpg";
+    
+    download_file(image_url, image_file).await?;
+    
+    // Search the Internet by face
+    match search_by_face(image_file).await {
+        Ok(urls_images) =&gt; {
+            for im in urls_images {
+                let score = im.score;
+                let url = im.url;
+                let base64_preview = if im.base64.len() &gt; 32 {
+                    &im.base64[..32]
+                } else {
+                    &im.base64
+                };
+                println!("{} {} {}...", score, url, base64_preview);
+            }
+        }
+        Err(error) =&gt; {
+            println!("{}", error);
+        }
+    }
+    
+    Ok(())
+}
+</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+
+        document.querySelectorAll('.tabs').forEach(function(tabContainer) {
+            const tabBtns = tabContainer.querySelectorAll('.tabs__btn');
+            const tabPanes = tabContainer.querySelectorAll('.tabs__pane');
+
+            function triggerTab(elt) {
+                elt.preventDefault();
+
+                let clickedTab = elt.target.dataset.tabTarget;
+                let targetPane = tabContainer.querySelector(`#${clickedTab}`);
+
+                tabBtns.forEach((btn) => {
+                    btn.classList.remove("is-active");
+                    btn.setAttribute("aria-selected", false);
+                });
+
+                tabPanes.forEach((pane) => {
+                    pane.classList.remove("is-visible");
+                });
+
+                elt.target.classList.add("is-active");
+                elt.target.setAttribute("aria-selected", true);
+
+                if (targetPane) {
+                    targetPane.classList.add("is-visible");
+                }
+            }
+
+            tabBtns.forEach((tab) => {
+                tab.addEventListener("click", triggerTab);
+            });
+        });
+    })();
+</script>
+
+
+
+
+
+
+<!--p><script type="text/javascript" language="javascript">document.write(' Te'+'legram ');</script> <i class="fa fa-telegram" style="font-size:20px; color:#0088CC"></i><span style="color:#0088CC;font-family:monospace" "><script type="text/javascript" language="javascript">document.write(' Fa' + 'ce' + 'Ch' + 'eckID');</script></span>
+</p-->
+
+
+
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container disclaimer">
+<b>AVISO LEGAL:</b> Somente para fins educacionais. Todas as imagens são indexadas a partir de páginas web públicas e prontamente disponíveis. O FaceCheck não armazena dados sensíveis ou de identificação pessoal. A IA do FaceCheck é treinada para não indexar rostos de crianças. Você não pode usar este site para tomar decisões sobre crédito ao consumidor, emprego, seguro ou triagem de inquilinos. O FaceCheck não faz nenhuma representação sobre o caráter, integridade ou histórico criminal de qualquer pessoa. O FaceCheck não é responsável por qualquer conteúdo em qualquer site de terceiros ao qual ele se vincula. O FaceCheck não é nem um editor nem uma agência de denúncias de consumidores. O FaceCheck é um motor de busca de reconhecimento facial.
+</div>
+<div class="container">
+    <div style="clear:both;margin:auto;font-weight:bold;text-align: center;line-height: 33px;padding-bottom:50px;margin-top:30px">
+        <a href="/pt/RemoveMyPhotos" style="font-weight:bold">Remover minhas Fotos do Motor de Busca do FaceCheck - Pedido de Remoção DMCA</a><br>
+        <a style="clear:both" href="/Face-Search/Privacy">Política de Privacidade</a> | <a style="clear:both" href="/Face-Search/Terms">Termos de Uso</a> | <a href="/pt/compare-reverse-image-search-engines/">Comparação</a> | <a href="/pt/Procura-de-Rosto-em-Imagem-Reversa">Procura de Rosto em Imagem Reversa</a><br>
+                <span style="clear:both">&copy; 2026 FaceCheck.ID por Tech Solutions - Belize</span>
+            </div>
+                        
+        </div>
+    </footer>
+
+    <script src="/static/pt/Language_71F21D8C.js" defer></script>
+    <script src="/static/Bundle_JBJJSCDSFSDSL_670702D1859DD3E8.js" defer></script>
+
+
+
+
+
+    
+
+    
+
+
+    <script src="/static/Bundle_HHA_47CF1ED496634363.js" defer></script>
+
+
+
+
+    <div class="faceseal" style="display:none"><div style="display:none" class="extension_preview"> &nbsp;Search by Right-Clicking on an Image</div></div>
+
+
+</body>
+</html>
